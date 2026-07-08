@@ -15,8 +15,8 @@
   </p>
   <br/>
   <blockquote>
-  ⚠️ <strong>To reliably isolate modern AVs, a kernel-mode driver (e.g., NDIS filter or Minifilter driver) is required.</strong>
-  Without kernel-mode privileges, user-mode hooks cannot intercept AV network stacks or handle low-level connections.
+  <strong>In order to robustly detect any modern AV, a kernel-mode driver (such as an NDIS filter or Minifilter driver) is needed.</strong>
+  Without kernel-level access, AV networks stack would not be filtered and low-level network connections could not be managed by the hooks.
   See <a href="#why-this-fails">Why This Fails</a>.
   </blockquote>
 </div>
@@ -57,8 +57,8 @@ The project has two components:
 
 | Component | Role |
 |---|---|
-| `main.cpp` / `main.exe` | **Primary implementation** — native C++ WFP-based network filter, headless, runs as a background service |
-| `example.py` | **Reference prototype only** — a Python HTTP proxy that models the same filtering logic in readable form; not the main deliverable |
+| `main.cpp` / `main.exe` | **Main Implementation** - native C++ WFP-based network filter (headless background service)|
+| `example.py` | **Reference prototype only** - Python HTTP proxy reflecting same logic to a human- readable form. This is NOT the actual product|
 
 > The C++ binary requires administrator privileges. This is enforced by an embedded `app.manifest` with `requireAdministrator` — Windows refuses to launch it without an admin token. **No UAC elevation prompt is triggered.**
 
@@ -105,18 +105,18 @@ The project has two components:
 
 ### Evasion-oriented design
 
-`fwpuclnt.dll` is loaded at runtime — no WFP functions appear in the import table. All function names and the DLL name itself are Base64-encoded:
+`Fwpuclnt.dll` gets loaded dynamically - none of the WFP functions seem to be exported in the import table. The DLL name and the functions names themselves are Base64 encoded:
 
 ```cpp
 hFwpDll = LoadLibraryA(Base64Decode("ZndwdWNsbnQuZGxs").c_str()); // fwpuclnt.dll
 pFwpmFilterAdd0 = (FwpmFilterAdd0_t)GetProcAddress(hFwpDll, Base64Decode("RndwbUZpbHRlckFkZDA=").c_str());
 ```
 
-AV endpoint domains and executable paths are also Base64-encoded — no plaintext strings in the binary.
+AV endpoint domains, executable paths also encoded Base64-encoded - there are not plain strings at all inside of the binary
 
 ### Sublayer & filter priority
 
-A custom WFP sublayer is registered at weight `0xFFFF` (highest priority). Two filter types are installed:
+Custom WFP sublayer installed at weight `0xFFFF` (top priority) install two filter types:
 
 **1. App identity filters** — `FWPM_LAYER_ALE_AUTH_CONNECT_V4/V6` + `FWPM_CONDITION_ALE_APP_ID`:
 - Known AV executable directories → `FWP_ACTION_BLOCK` (weight 15)
@@ -139,19 +139,19 @@ The WFP session is opened with `FWPM_SESSION_FLAG_DYNAMIC` — all filters are a
 
 <a id="reference-impl"></a>
 
-> **`example.py` is a high-level prototype**, written to make the filtering logic readable and easy to study. It is **not** the main component of this PoC. It uses third-party libraries (`proxy.py`, `psutil`) which the C++ implementation avoids entirely.
+> **`example.py`** The python script example.py is a high level prototype meant to ease the reading and exploration of the filter logic, but it's not the heart of this PoC, as it relies on third party libraries (proxy.py, psutil) that the C++ version entirely avoids.
 
-`example.py` models the same concept through an HTTP proxy:
+`example.py` demonstrates the same idea but via an HTTP proxy:
 
 - Starts `proxy.py` on `127.0.0.1:8899`
-- Writes the proxy address to `HKCU`, `HKLM`, and WinHTTP so system services route through it
+- Writes proxy address to `HKCU`, `HKLM`, and `WinHTTP` so system services will use it
 - `AdblockPlugin` per-request logic:
-  - Resolves the requesting process: TCP port → PID → `.exe` path via `psutil`
+  - Terminates requesting process: tcp port PID.exe path via psutil
   - AV processes → `403 Blocked app`
   - AV domains (wildcard `fnmatch`) → `403 Blocked domain`
   - Whitelisted browsers → pass-through
 
-`reset_proxy.py` clears all registry and WinHTTP proxy settings if the process crashes and leaves the system offline.
+`reset_proxy.py` - when run if it is hung and exits without removing the proxy settings it should remove everything if system has lost internet.
 
 ---
 
@@ -163,14 +163,14 @@ The WFP session is opened with `FWPM_SESSION_FLAG_DYNAMIC` — all filters are a
 
 | Limitation | Explanation |
 |---|---|
-| **HTTP proxy scope** | The Python layer only intercepts HTTP/HTTPS through the system proxy. AV clients use their own TLS stacks and raw sockets — proxy settings are ignored. |
-| **WFP ALE layer** | `FWPM_LAYER_ALE_AUTH_CONNECT` fires at user-mode socket creation. AV kernel minifilters and NDIS drivers send traffic below this layer. |
-| **Protected Process Light** | Windows Defender and others run as PPL. Their network I/O is not subject to WFP callout matching by unprivileged providers. |
-| **AV owns WFP too** | Enterprise AVs register their own higher-priority WFP providers. They can delete foreign filters or install a `FWP_ACTION_PERMIT` that outweighs any block. |
-| **CDN IP rotation** | The IP-block approach resolves A records at the time of execution. CDN-backed AV infrastructure serves different IPs constantly — any address resolved after the last refresh cycle is unrestricted. |
-| **Dynamic session** | `FWPM_SESSION_FLAG_DYNAMIC` means every filter disappears the instant the process is killed. No persistence, no resilience. |
+| **HTTP proxy scope** | It only can see HTTP/HTTPS via system proxy from the Python layer. AV clients have own TLS stack and use raw socket - ignores proxy settings. |
+| **WFP ALE layer** |  The `FWPM_LAYER_ALE_AUTH_CONNECT` event is triggered when a user-mode socket is created. Traffic is sent below this layer by AV kernel minifilters and NDIS drivers.|
+| **Protected Process Light** | PPL processes like the ones from Windows Defender and others are immune to network I/O filtering in the WFP with non-privileged provider callout matching.|
+| **AV owns WFP too** | Enterprise AVs can register their own higher-priority WFP providers. They can remove foreign filters or add a `FWP_ACTION_PERMIT` to outrank a block.|
+| **CDN IP rotation** | IP-block solution resolves A records on execution. CDN-supported AV infra changes IPs every so often - any address that resolves after the last update cycle is open.|
+| **Dynamic session** | With `FWPM_SESSION_FLAG_DYNAMIC` every filter vanishes instantly when the process died. It’s got no persistence, and definitely no resilience. |
 
-**This tool cannot meaningfully disrupt any modern AV product in a real environment.**
+**There’s nothing that this tool can do to significantly interfere with any of today’s modern AV products in real world usage without kernel-driver access.**
 
 ---
 
@@ -180,11 +180,11 @@ The WFP session is opened with `FWPM_SESSION_FLAG_DYNAMIC` — all filters are a
 
 ```
 AVNetBlind/
-├── main.cpp           # ★ Primary PoC — C++ WFP engine (headless, no console)
-├── example.py         #   Reference prototype only — Python HTTP proxy equivalent
-├── reset_proxy.py     #   Utility — resets all system proxy registry state
+├── main.cpp           # ★ Initial PoC - WFP engine with C++(no console)headless
+├── example.py         #   Reference prototype only-python http proxy eqval
+├── reset_proxy.py     #   Utility - system proxy registry state reset
 ├── resource.rc        #   Win32 resources (version info, icon, manifest)
-├── app.manifest       #   requireAdministrator — no UAC prompt, hard admin requirement
+├── app.manifest       #   Admin - no UAC, admin not forced
 ├── icon.ico           #   Application icon
 └── build.bat          #   MSVC build (cl.exe + rc.exe, x64)
 ```
@@ -243,10 +243,10 @@ All domain and path lists are Base64-encoded in source — **no plaintext string
 `main.exe` — **2 / 70** on VirusTotal.
 
 Contributing factors:
-- No WFP functions in import table (`LoadLibrary` + `GetProcAddress` at runtime)
-- No plaintext AV domain or path strings
-- `/SUBSYSTEM:WINDOWS` + hidden message loop — indistinguishable from a normal background GUI app
-- Zero persistent state (`FWPM_SESSION_FLAG_DYNAMIC`)
+- No WFP funcs in the import table (LoadLibrary + GetProcAddress at runtime)
+- no av plaintext domain/path strings
+- /SUBSYSTEM:WINDOWS (and a hidden message loop that looks exactly like any normal background GUI app)
+- Zero persistent state (FWPM_SESSION_FLAG_DYNAMIC)
 
 ---
 
@@ -256,18 +256,22 @@ Contributing factors:
 
 > This project is published **for educational and research purposes only.**
 >
-> It is a proof-of-concept exploring a category of technique. It **cannot** meaningfully disrupt any real antivirus product. Do not deploy this on systems you do not own or have explicit written permission to test.
+> This is a proof-of-concept for a type of technique. This is NOT capable of actually breaking any real antivirus product. Do NOT attempt to run this on a machine that you don't own or have prior written approval to test on.
 >
-> The author assumes no liability for misuse.
+> The author accepts no responsibility for the usage of this information.
 
 ---
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 <!-- MARKDOWN LINKS -->
-[stars-shield]: https://img.shields.io/github/stars/your_username/AVNetBlind.svg?style=for-the-badge
-[stars-url]: https://github.com/your_username/AVNetBlind/stargazers
-[issues-shield]: https://img.shields.io/github/issues/your_username/AVNetBlind.svg?style=for-the-badge
-[issues-url]: https://github.com/your_username/AVNetBlind/issues
+[stars-shield]: https://img.shields.io/github/stars/yamanist0/AVNetBlind.svg?style=for-the-badge
+[stars-url]: https://github.com/yamanist0/AVNetBlind/stargazers
+[issues-shield]: https://img.shields.io/github/issues/yamanist0/AVNetBlind.svg?style=for-the-badge
+[issues-url]: https://github.com/yamanist0/AVNetBlind/issues
 [license-shield]: https://img.shields.io/badge/license-MIT-blue.svg?style=for-the-badge
-[license-url]: https://github.com/your_username/AVNetBlind/blob/master/LICENSE
+[license-url]: https://github.com/yamanist0/AVNetBlind/blob/master/LICENSE
+
+<p align="center">
+  <small>Made with 🤍 by <a href="https://github.com/yamanist0">yamanist</a></small>
+</p>
