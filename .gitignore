@@ -1,0 +1,17 @@
+# Build artifacts
+main.exe
+main.obj
+resource.res
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Visual Studio / IDEs
+.vs/
+*.user
+*.suo
+*.db
+*.opendb
