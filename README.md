@@ -269,7 +269,7 @@ Contributing factors:
 [stars-url]: https://github.com/yamanist0/AVNetBlind/stargazers
 [issues-shield]: https://img.shields.io/github/issues/yamanist0/AVNetBlind.svg?style=for-the-badge
 [issues-url]: https://github.com/yamanist0/AVNetBlind/issues
-[license-shield]: [https://img.shields.io/badge/license-MIT-blue.svg?style=for-the-badge](https://img.shields.io/github/license/esa/torchquad)
+[license-shield]: [https://img.shields.io/github/license/esa/torchquad]
 [license-url]: https://github.com/yamanist0/AVNetBlind/blob/master/LICENSE
 
 <p align="center">
