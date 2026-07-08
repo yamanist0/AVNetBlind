@@ -267,7 +267,7 @@ Contributing factors:
 <!-- MARKDOWN LINKS -->
 [stars-shield]: https://img.shields.io/github/stars/yamanist0/AVNetBlind.svg?style=for-the-badge
 [stars-url]: https://github.com/yamanist0/AVNetBlind/stargazers
-[issues-shield]: https://img.shields.io/github/issues/yamanist0/AVNetBlind.svg?style=for-the-badge
+[license-shield]: https://img.shields.io/badge/license-GPLv3-blue.svg?style=for-the-badge
 [issues-url]: https://github.com/yamanist0/AVNetBlind/issues
 [license-shield]: https://img.shields.io/github/license/esa/torchquad
 [license-url]: https://github.com/yamanist0/AVNetBlind/blob/master/LICENSE
