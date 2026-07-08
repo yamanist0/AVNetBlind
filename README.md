@@ -29,7 +29,7 @@
   <ol>
     <li><a href="#about">About</a></li>
     <li><a href="#architecture">Architecture</a></li>
-    <li><a href="#how-it-works">How It Works — C++ WFP Engine</a></li>
+    <li><a href="#how-it-works">How It Works - C++ WFP Engine</a></li>
     <li><a href="#reference-impl">Reference Implementation (Python)</a></li>
     <li><a href="#why-this-fails">Why This Fails (PoC Limitations)</a></li>
     <li><a href="#project-structure">Project Structure</a></li>
@@ -60,7 +60,7 @@ The project has two components:
 | `main.cpp` / `main.exe` | **Main Implementation** - native C++ WFP-based network filter (headless background service)|
 | `example.py` | **Reference prototype only** - Python HTTP proxy reflecting same logic to a human- readable form. This is NOT the actual product|
 
-> The C++ binary requires administrator privileges. This is enforced by an embedded `app.manifest` with `requireAdministrator` — Windows refuses to launch it without an admin token. **No UAC elevation prompt is triggered.**
+> The C++ binary requires administrator privileges. This is enforced by an embedded `app.manifest` with `requireAdministrator` - Windows refuses to launch it without an admin token. **No UAC elevation prompt is triggered.**
 
 ---
 
@@ -97,7 +97,7 @@ The project has two components:
 
 ---
 
-## How It Works — C++ WFP Engine
+## How It Works - C++ WFP Engine
 
 <a id="how-it-works"></a>
 
@@ -118,20 +118,20 @@ AV endpoint domains, executable paths also encoded Base64-encoded - there are no
 
 Custom WFP sublayer installed at weight `0xFFFF` (top priority) install two filter types:
 
-**1. App identity filters** — `FWPM_LAYER_ALE_AUTH_CONNECT_V4/V6` + `FWPM_CONDITION_ALE_APP_ID`:
+**1. App identity filters** - `FWPM_LAYER_ALE_AUTH_CONNECT_V4/V6` + `FWPM_CONDITION_ALE_APP_ID`:
 - Known AV executable directories → `FWP_ACTION_BLOCK` (weight 15)
 - Known browser executables → `FWP_ACTION_PERMIT` (weight 14, overrides domain blocks for browsers)
 
-**2. IP address filters** — `FWPM_CONDITION_IP_REMOTE_ADDRESS`:
+**2. IP address filters** - `FWPM_CONDITION_IP_REMOTE_ADDRESS`:
 A background thread resolves each blocked domain via `getaddrinfo` every 5 minutes, deduplicates the IPs, clears old filters, and installs fresh `/32` `FWP_ACTION_BLOCK` rules.
 
 ### No persistent state
 
-The WFP session is opened with `FWPM_SESSION_FLAG_DYNAMIC` — all filters are automatically removed when the process exits. A hidden message-loop window (`CreateWindowEx`, not visible) keeps the process alive and provides a clean `WM_DESTROY` shutdown path.
+The WFP session is opened with `FWPM_SESSION_FLAG_DYNAMIC` - all filters are automatically removed when the process exits. A hidden message-loop window (`CreateWindowEx`, not visible) keeps the process alive and provides a clean `WM_DESTROY` shutdown path.
 
 ### Admin requirement
 
-`app.manifest` sets `requestedExecutionLevel` to `requireAdministrator`. The OS enforces this at launch — the process token either already carries admin rights or the launch is rejected outright.
+`app.manifest` sets `requestedExecutionLevel` to `requireAdministrator`. The OS enforces this at launch - the process token either already carries admin rights or the launch is rejected outright.
 
 ---
 
@@ -200,7 +200,7 @@ AVNetBlind/
 <a id="prerequisites"></a>
 
 - Windows 10/11 (x64)
-- Visual Studio 2022 — "Desktop development with C++" workload
+- Visual Studio 2022 - "Desktop development with C++" workload
 - Windows SDK with WFP headers (`fwpmu.h`, `fwpmtypes.h`)
 - Must be run as **administrator** (manifest enforces this)
 
@@ -220,7 +220,7 @@ Calls `vcvarsall.bat x64`, compiles the resource file, then links:
 cl main.cpp resource.res ws2_32.lib iphlpapi.lib shlwapi.lib wininet.lib advapi32.lib user32.lib shell32.lib /O2 /EHsc
 ```
 
-The resulting `main.exe` has the manifest embedded. Launch it — if not already running as admin, Windows will reject the launch.
+The resulting `main.exe` has the manifest embedded. Launch it - if not already running as admin, Windows will reject the launch.
 
 ---
 
@@ -232,7 +232,7 @@ Update, telemetry, and cloud endpoints for **30+ vendors**:
 
 `McAfee / Trellix` · `Trend Micro` · `Avira` · `Kaspersky` · `Bitdefender` · `Malwarebytes` · `ESET` · `Avast` · `AVG` · `Norton / Symantec` · `Windows Defender` · `SentinelOne` · `Cylance (Blackberry)` · `FireEye` · `Fortinet` · `Heimdal` · `Cybereason` · `Webroot` · `Comodo` · `DrWeb` · `Emsisoft` · `ZoneAlarm` · `VIPRE` · `AhnLab` · `Quick Heal` · `K7` · `360 Total Security` · `IObit` · `Panda` · `F-Secure`
 
-All domain and path lists are Base64-encoded in source — **no plaintext strings** in the compiled binary.
+All domain and path lists are Base64-encoded in source  **no plaintext strings** in the compiled binary.
 
 ---
 
@@ -240,7 +240,7 @@ All domain and path lists are Base64-encoded in source — **no plaintext string
 
 <a id="detection"></a>
 
-`main.exe` — **2 / 70** on VirusTotal.
+`main.exe` - **2 / 70** on VirusTotal.
 
 Contributing factors:
 - No WFP funcs in the import table (LoadLibrary + GetProcAddress at runtime)
@@ -269,7 +269,7 @@ Contributing factors:
 [stars-url]: https://github.com/yamanist0/AVNetBlind/stargazers
 [issues-shield]: https://img.shields.io/github/issues/yamanist0/AVNetBlind.svg?style=for-the-badge
 [issues-url]: https://github.com/yamanist0/AVNetBlind/issues
-[license-shield]: https://img.shields.io/badge/license-MIT-blue.svg?style=for-the-badge
+[license-shield]: [https://img.shields.io/badge/license-MIT-blue.svg?style=for-the-badge](https://img.shields.io/github/license/esa/torchquad)
 [license-url]: https://github.com/yamanist0/AVNetBlind/blob/master/LICENSE
 
 <p align="center">
