@@ -125,6 +125,7 @@ FwpmGetAppIdFromFileName0_t pFwpmGetAppIdFromFileName0 = nullptr;
 FwpmFreeMemory0_t pFwpmFreeMemory0 = nullptr;
 
 void WfpCleanup() {
+    // Close the WFP engine if it's open
     if (engineHandle && pFwpmEngineClose0) {
         pFwpmEngineClose0(engineHandle);
         engineHandle = NULL;
