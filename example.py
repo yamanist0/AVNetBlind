@@ -178,6 +178,7 @@ def set_winhttp_proxy(enable, server):
         # system-wide service proxy setup, netsh logic is so annoying
         if enable:
             cmd = f'netsh winhttp set proxy proxy-server="{server}" bypass-list="localhost;127.0.0.1"'
+            print(f"Setting proxy: {cmd}")
             subprocess.run(cmd, shell=True, capture_output=True)
         else:
             subprocess.run('netsh winhttp reset proxy', shell=True, capture_output=True)
