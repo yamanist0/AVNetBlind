@@ -19,14 +19,14 @@ def run_as_admin():
 
 def reset_hkcu():
     try:
-        reg_key = winreg.OpenKey(
+        regKey = winreg.OpenKey(
             winreg.HKEY_CURRENT_USER,
             r'Software\Microsoft\Windows\CurrentVersion\Internet Settings',
             0,
             winreg.KEY_ALL_ACCESS
         )
-        winreg.SetValueEx(reg_key, 'ProxyEnable', 0, winreg.REG_DWORD, 0)
-        winreg.CloseKey(reg_key)
+        winreg.SetValueEx(regKey, 'ProxyEnable', 0, winreg.REG_DWORD, 0)
+        winreg.CloseKey(regKey)
         print("[OK] HKCU proxy disabled")
     except Exception as e:
         print(f"[FAIL] HKCU: {e}")
