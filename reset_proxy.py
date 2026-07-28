@@ -33,7 +33,7 @@ def reset_hkcu():
 
 def reset_hklm():
     try:
-        reg_key = winreg.OpenKey(
+        registry_key = winreg.OpenKey(
             winreg.HKEY_LOCAL_MACHINE,
             r'SOFTWARE\Microsoft\Windows\CurrentVersion\Internet Settings\Connections',
             0,
@@ -46,8 +46,8 @@ def reset_hklm():
         data += struct.pack('<I', 0) + b''  # bypass (empty)
         data += struct.pack('<I', 0) + b''  # autoconfig (empty)
         data += b'\x00' * 32
-        winreg.SetValueEx(reg_key, 'DefaultConnectionSettings', 0, winreg.REG_BINARY, data)
-        winreg.CloseKey(reg_key)
+        winreg.SetValueEx(registry_key, 'DefaultConnectionSettings', 0, winreg.REG_BINARY, data)
+        winreg.CloseKey(registry_key)
         print("[OK] HKLM DefaultConnectionSettings reset")
     except Exception as e:
         print(f"[FAIL] HKLM: {e}")
