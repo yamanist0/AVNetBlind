@@ -135,7 +135,7 @@ void WfpCleanup() {
     }
 }
 
-bool WfpInit() {
+bool WfpSetup() {
     hFwpDll = LoadLibraryA(Base64Decode("ZndwdWNsbnQuZGxs").c_str());
     if (!hFwpDll) return false;
 
