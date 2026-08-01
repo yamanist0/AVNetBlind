@@ -110,6 +110,7 @@ class AdblockPlugin(HttpProxyBasePlugin):
 # useless windows registry hacks and uac bypass logic
 def is_admin():
     try:
+        # This is a Windows specific way to check admin status
         return ctypes.windll.shell32.IsUserAnAdmin()
     except Exception:
         return False
