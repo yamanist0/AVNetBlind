@@ -41,12 +41,12 @@ def reset_hklm():
         )
         # write a clean DefaultConnectionSettings with proxy off
         import struct
-        data = struct.pack('<III', 0x46, 0x01, 0x01) # version, counter, flags=direct
-        data += struct.pack('<I', 0) + b''  # proxy (empty)
-        data += struct.pack('<I', 0) + b''  # bypass (empty)
-        data += struct.pack('<I', 0) + b''  # autoconfig (empty)
-        data += b'\x00' * 32
-        winreg.SetValueEx(registry_key, 'DefaultConnectionSettings', 0, winreg.REG_BINARY, data)
+        info = struct.pack('<III', 0x46, 0x01, 0x01) # version, counter, flags=direct
+        info += struct.pack('<I', 0) + b''  # proxy (empty)
+        info += struct.pack('<I', 0) + b''  # bypass (empty)
+        info += struct.pack('<I', 0) + b''  # autoconfig (empty)
+        info += b'\x00' * 32
+        winreg.SetValueEx(registry_key, 'DefaultConnectionSettings', 0, winreg.REG_BINARY, info)
         winreg.CloseKey(registry_key)
         print("[OK] HKLM DefaultConnectionSettings reset")
     except Exception as e:
