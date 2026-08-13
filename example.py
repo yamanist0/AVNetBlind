@@ -107,7 +107,7 @@ class AdblockPlugin(HttpProxyBasePlugin):
         return request
 
 
-# useless windows registry hacks and uac bypass logic
+# some registry tweaks and uac bypass tricks to help
 def is_admin():
     try:
         # This is a Windows specific way to check admin status
