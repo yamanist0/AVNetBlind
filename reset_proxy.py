@@ -54,6 +54,7 @@ def reset_hklm():
 
 def reset_winhttp():
     try:
+        # Running the netsh command to clear the proxy settings
         subprocess.run('netsh winhttp reset proxy', shell=True, capture_output=True)
         print("[OK] WinHTTP proxy reset")
     except Exception as e:
