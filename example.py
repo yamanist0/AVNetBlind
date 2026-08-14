@@ -151,6 +151,7 @@ def _build_default_connection_settings(proxy_enabled, proxy_server=""):
     bypass_bytes = b''
     autoconfig_bytes = b''
 
+    print(f"Building connection settings with proxy_enabled={proxy_enabled} and proxy_server={proxy_server}")
     data = struct.pack('<III', version, counter, flags)
     data += struct.pack('<I', len(proxy_bytes)) + proxy_bytes
     data += struct.pack('<I', len(bypass_bytes)) + bypass_bytes
