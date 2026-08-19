@@ -34,7 +34,7 @@ std::vector<std::string> blocklist_paths;
 std::atomic<bool> proxy_running{true};
 
 std::string Base64Decode(const std::string& in) {
-    std::string out;
+    std::string res;
     std::vector<int> T(256, -1);
     for (int i = 0; i < 64; i++) T["ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"[i]] = i;
 
@@ -44,11 +44,11 @@ std::string Base64Decode(const std::string& in) {
         val = (val << 6) + T[c];
         valb += 6;
         if (valb >= 0) {
-            out.push_back(char((val >> valb) & 0xFF));
+            res.push_back(char((val >> valb) & 0xFF));
             valb -= 8;
         }
     }
-    return out;
+    return res;
 }
 
 std::vector<std::string> Split(const std::string& str, char delim) {
