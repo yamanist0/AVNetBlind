@@ -10,7 +10,7 @@ def is_admin():
     try:
         return ctypes.windll.shell32.IsUserAnAdmin()
     except Exception:
-        print("Admin check failed")
+print("Cannot verify admin status")
         return False
 
 def run_as_admin():
