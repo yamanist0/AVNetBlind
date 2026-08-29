@@ -61,9 +61,9 @@ def reset_winhttp():
         print(f"[FAIL] WinHTTP: {e}")
 
 def notify_system():
-    internet_set_option = ctypes.windll.wininet.InternetSetOptionW
-    internet_set_option(0, 39, 0, 0)
-    internet_set_option(0, 37, 0, 0)
+    inet_set_opt = ctypes.windll.wininet.InternetSetOptionW
+    inet_set_opt(0, 39, 0, 0)
+    inet_set_opt(0, 37, 0, 0)
 
 if __name__ == '__main__':
     if not is_admin():
