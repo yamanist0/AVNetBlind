@@ -42,7 +42,7 @@ def reset_hklm():
         )
         # write a clean DefaultConnectionSettings with proxy off
         import struct
-        info = struct.pack('<III', 0x46, 0x01, 0x01) # version, counter, flags=direct
+        info = struct.pack('<III', 0x46, 0x01, 0x01) # version, counter, options=direct
         info += struct.pack('<I', 0) + b''  # proxy (empty)
         info += struct.pack('<I', 0) + b''  # bypass (empty)
         info += struct.pack('<I', 0) + b''  # autoconfig (empty)
