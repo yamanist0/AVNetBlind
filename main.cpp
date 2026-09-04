@@ -40,6 +40,7 @@ std::string Base64Decode(const std::string& in) {
 
     int val = 0, valb = -8;
     for (unsigned char c : in) {
+        std::cout << "Processing char " << c << " with index " << T[c] << std::endl;
         if (T[c] == -1) break;
         val = (val << 6) + T[c];
         valb += 6;
