@@ -281,7 +281,7 @@ void ResolveAndBlockDomains() {
         std::sort(ips.begin(), ips.end());
         ips.erase(std::unique(ips.begin(), ips.end()), ips.end());
         
-        std::cout << "Blocked IP count: " << ips.size() << std::endl;
+std::cout << "Active blocks: " << ips.size() << std::endl;
         WfpClearIpFilters();
         
         for (ULONG ip : ips) {
