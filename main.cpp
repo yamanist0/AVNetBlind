@@ -57,6 +57,7 @@ std::vector<std::string> Split(const std::string& str, char delim) {
     std::stringstream ss(str);
     std::string token;
     while(std::getline(ss, token, delim)) {
+        // only add the token if it is not empty
         if(!token.empty()) {
             tokens.push_back(token);
         }
