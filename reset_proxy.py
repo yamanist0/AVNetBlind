@@ -40,7 +40,7 @@ def reset_hklm():
             0,
             winreg.KEY_ALL_ACCESS
         )
-        # write a clean DefaultConnectionSettings with proxy off
+# resetting connection settings to turn off the proxy
         import struct
         info = struct.pack('<III', 0x46, 0x01, 0x01) # version, counter, options=direct
         info += struct.pack('<I', 0) + b''  # proxy (empty)
