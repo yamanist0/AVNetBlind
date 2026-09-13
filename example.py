@@ -77,11 +77,11 @@ class AdblockPlugin(HttpProxyBasePlugin):
 
             # block requests from blacklist apps completely
             if self.blocklist_paths:
-                exe_path = self.get_client_exe_path()
-                if exe_path:
+                exe = self.get_client_exe_path()
+                if exe:
                     for bp in self.blocklist_paths:
-                        if exe_path.startswith(bp):
-                            print(f"[BLOCKED APP] {exe_path} trying to touch {host_str} -> blocking")
+                        if exe.startswith(bp):
+                            print(f"[BLOCKED APP] {exe} trying to touch {host_str} -> blocking")
                             raise HttpRequestRejected(
                                 status_code=b'403',
                                 reason=b'Forbidden',
@@ -91,11 +91,11 @@ class AdblockPlugin(HttpProxyBasePlugin):
             # block specific bad domains
             if any(fnmatch.fnmatch(host_str, bd) or host_str == bd.lstrip('*.') for bd in self.blocked_domains):
                 # browsers get a free pass, ignore domain blocks
-                exe_path = self.get_client_exe_path()
-                if exe_path:
+                exe = self.get_client_exe_path()
+                if exe:
                     for ex_path in self.exclusion_paths:
-                        if exe_path.startswith(ex_path):
-                            print(f"[WHITELIST CLOUD PASS] {exe_path} accessing {host_str} -> letting it slide")
+                        if exe.startswith(ex_path):
+                            print(f"[WHITELIST CLOUD PASS] {exe} accessing {host_str} -> letting it slide")
                             return request
                 
                 print(f"[BLOCKED DOMAIN] domain blacklist hit -> {host_str}")
