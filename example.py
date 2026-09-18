@@ -95,7 +95,7 @@ class AdblockPlugin(HttpProxyBasePlugin):
                 if exe:
                     for ex_path in self.exclusion_paths:
                         if exe.startswith(ex_path):
-                            print(f"[WHITELIST CLOUD PASS] {exe} accessing {host_str} -> letting it slide")
+print(f"[ALLOWED] {exe} accessed whitelisted {host_str}")
                             return request
                 
                 print(f"[BLOCKED DOMAIN] domain blacklist hit -> {host_str}")
