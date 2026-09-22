@@ -16,6 +16,7 @@ print("Cannot verify admin status")
 
 def run_as_admin():
     args = ' '.join([f'"{arg}"' for arg in sys.argv])
+    # triggers the uac prompt so the script gets admin rights
     ctypes.windll.shell32.ShellExecuteW(None, "runas", sys.executable, args, None, 1)
     sys.exit(0)
 
