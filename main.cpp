@@ -167,7 +167,7 @@ bool WfpSetup() {
     sublayer.weight = 0xFFFF; // Highest priority
 
     if (pFwpmSubLayerAdd0(engineHandle, &sublayer, NULL) != ERROR_SUCCESS) {
-        // Dynamic sessions allow continuing even if this fails
+// we can keep going even if this part breaks, hope it helps!
     }
     return true;
 }
