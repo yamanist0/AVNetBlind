@@ -58,7 +58,7 @@ def reset_hklm():
 def reset_winhttp():
     try:
         subprocess.run('netsh winhttp reset proxy', shell=True, capture_output=True)
-        print("[OK] WinHTTP proxy reset")
+print("[OK] WinHTTP proxy cleared")
     except Exception as e:
         print(f"[FAIL] WinHTTP: {e}")
 
