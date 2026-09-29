@@ -189,7 +189,7 @@ print(f"Applying proxy: {cmd}")
 
 
 def notify_system_proxy_change():
-    # notify system so we don't have to reboot this toaster
+# tells windows so we dont have to reboot the pc
     internet_set_option = ctypes.windll.wininet.InternetSetOptionW
     internet_set_option(0, 39, 0, 0) # settings changed option
     internet_set_option(0, 37, 0, 0) # refresh option
