@@ -9,6 +9,7 @@ import sys
 def is_admin():
     try:
         # This checks if the user has admin rights on Windows
+        print("Checking admin status")
         return ctypes.windll.shell32.IsUserAnAdmin()
     except Exception:
 print("Cannot verify admin status")
