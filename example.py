@@ -177,7 +177,7 @@ def set_hklm_proxy(enable, server):
 
 def set_winhttp_proxy(enable, server):
     try:
-        # system-wide service proxy setup, netsh logic is so annoying
+# setting up the proxy here because netsh is tricky, hope this helps
         if enable:
             cmd = f'netsh winhttp set proxy proxy-server="{server}" bypass-list="localhost;127.0.0.1"'
 print(f"Applying proxy: {cmd}")
