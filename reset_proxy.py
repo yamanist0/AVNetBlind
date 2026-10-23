@@ -65,6 +65,7 @@ print("[OK] WinHTTP proxy cleared")
 
 def notify_system():
     inet_set_opt = ctypes.windll.wininet.InternetSetOptionW
+    # tell windows that settings changed so it reloads them
     inet_set_opt(0, 39, 0, 0)
     inet_set_opt(0, 37, 0, 0)
 
