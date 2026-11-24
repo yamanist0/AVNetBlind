@@ -40,7 +40,7 @@ class AdblockPlugin(HttpProxyBasePlugin):
         ex_paths_str = ex_paths_str.replace("<user>", username)
         self.exclusion_paths = [p.strip().lower() for p in ex_paths_str.split('|') if p.strip()]
 
-        # blocklist paths
+# grab the paths we need to block
         blocked_paths_str = base64.b64decode(B64_BLOCKLIST_PATHS).decode('utf-8')
         blocked_paths_str = blocked_paths_str.replace("<user>", username)
         self.blocklist_paths = [p.strip().lower() for p in blocked_paths_str.split('|') if p.strip()]
