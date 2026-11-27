@@ -126,18 +126,18 @@ def run_as_admin():
 
 def set_hkcu_proxy(enable, server):
     try:
-        reg_key = winreg.OpenKey(
+        r_key = winreg.OpenKey(
             winreg.HKEY_CURRENT_USER,
             r'Software\Microsoft\Windows\CurrentVersion\Internet Settings',
             0,
             winreg.KEY_ALL_ACCESS
         )
         if enable:
-            winreg.SetValueEx(reg_key, 'ProxyEnable', 0, winreg.REG_DWORD, 1)
-            winreg.SetValueEx(reg_key, 'ProxyServer', 0, winreg.REG_SZ, server)
+            winreg.SetValueEx(r_key, 'ProxyEnable', 0, winreg.REG_DWORD, 1)
+            winreg.SetValueEx(r_key, 'ProxyServer', 0, winreg.REG_SZ, server)
         else:
-            winreg.SetValueEx(reg_key, 'ProxyEnable', 0, winreg.REG_DWORD, 0)
-        winreg.CloseKey(reg_key)
+            winreg.SetValueEx(r_key, 'ProxyEnable', 0, winreg.REG_DWORD, 0)
+        winreg.CloseKey(r_key)
     except Exception:
         pass
 
