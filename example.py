@@ -143,7 +143,7 @@ def set_hkcu_proxy(enable, server):
 
 
 def _build_default_connection_settings(proxy_enabled, proxy_server=""):
-    # assembling this ugly binary struct because internet explorer defaults are weird
+# making this odd binary block to match what internet explorer expects
     version = 0x46
     counter = 0x01
     flags = 0x03 if proxy_enabled else 0x01
